@@ -1,0 +1,191 @@
+<html>
+	<head>
+		<title>Console Chrome Games Ranking</title>
+		<style type="text/css">
+		#console {
+			border: 1px solid #B8C3C9;
+			width:300px;
+			height:100%;
+		}
+
+		table, th, td {
+			border:1px solid grey;
+		}
+
+		thead td {
+			width:200px;
+		}
+
+		.ranking {
+			float:left;
+			margin-right: 10px;
+		}
+		</style>
+		<script src="libs/jquery.js"></script>
+		<script src="libs/underscore.js"></script>
+		<script src="libs/ranking.js"></script>
+		<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+		<script type="text/javascript">
+		
+		var ranking_console = {
+			games: [
+				'mong-adventure',
+				'breakout',
+				'candypang'
+			],
+			tmpl: {
+				game_title: '<input type="radio" name="games" value="<%=game%>"><%=game%></input>',
+				game_table: '<div class="ranking"><table id="<%=game%>" cellspacing="0"><thead><td colspan="2"><%=game%></td></thead><tbody></tbody></table></div>',
+				game_record: '<tr class="record"><td class="score"><%=user_name%></td><td class="score"><%=score%></td></tr>'
+			},
+			generate: function() {
+				var score = _.random(1, 1000)
+					,	game_index = _.random(0, ranking_console.games.length);
+
+				$('input[name=user_name]').val('도전자-' + score);
+				$('input[name=score]').val(score);
+				$($('#games input')[game_index]).attr('checked', 'checked');
+			},
+			run: function() {
+				$(document).ready(function() {
+					// render games
+					_.each(ranking_console.games, function(game, i) {
+						$('#games').append(_.template(this.tmpl.game_title, {game:game}));
+						$('#rankings').append(_.template(this.tmpl.game_table, {game:game}));
+					}, ranking_console);
+					$($('#games input')[0]).attr('checked', 'checked');
+
+					// bind events
+					$('input[name=get]').click(game.get);
+					$('input[name=game_start]').click(game.start);
+					$('input[name=game_end]').click(game.end);
+					$('input[name=random]').click(ranking_console.generate);
+
+					// make connection with server
+					ranking.connect(ranking_console);
+
+					// generate values
+					ranking_console.generate();
+				});
+			},
+			user_name: function(name) {
+				if (name)
+					$('input[name=user_name]').val(name);
+				return $('input[name=user_name]').val();
+			},
+			score: function(score) {
+				if (score)
+					$('input[name=score]').val(score);
+				return $('input[name=score]').val();
+			},
+			game_name: function(idx) {
+				if (idx)
+					$($('#games input')[idx]).attr('checked', 'checked');
+				return $('input[name=games]:checked').val()
+			},
+			query_option: function() {
+				return {
+					offset:$('input[name=offset]').val(),
+					limit:$('input[name=limit]').val(),
+					orderby:$('input[name=orderby]:checked').val()
+				}
+			},
+			render_table: function(rankers) {
+				var $t = $('table#' + ranking_console.game_name() + ' tbody');
+				$t.children().remove();
+				$.each(rankers, function(i, v) {
+					var record = _.template(ranking_console.tmpl.game_record, v);
+					$t.append(record);
+				});
+			},
+			onopen:function(socket) {
+				$('#channel_msg').text('got connection');
+			},
+			onerror:function() {
+				$('#channel_msg').text('got error with channel');
+			},
+			onmessage:function(args) {
+				var data = JSON.parse(args.data)
+					,	msg = ['[' + data.action + ']', data.rank, data.user_name, data.score].join(' ');
+				$('#channel_msg').text(msg);
+			},
+			onclose: function() {
+				$('#channel_msg').text('channel closed');
+			},
+		};
+
+		var game = {
+			timer: undefined,
+			error: function(res, opt) {
+				if (!res) {
+					clearInterval(game.timer);
+					throw 'game query failed';
+				}
+			},
+			start: function() {
+				clearInterval(game.timer);
+				game.trigger('start', function(res, opt) {
+					game.timer = setInterval(function() {
+						ranking_console.score(Math.floor(ranking_console.score()) + _.random(0, 100));
+						game.trigger('score');
+					}, 3000);
+				});
+			},
+			end: function() {
+				clearInterval(game.timer);
+				game.timer = undefined;
+				game.trigger('end', function(res, opt) {
+					game.get();
+				});
+			},
+			get: function() {
+				var opt = ranking_console.query_option();
+				ranking.rankers(ranking_console.game_name(), opt.offset, opt.limit, opt.orderby, function(res, data) {
+					res || game.error(data);
+					ranking_console.render_table(JSON.parse(data));
+				});
+			},
+			trigger: function(event, cb) {
+				var args = {
+					user_name:ranking_console.user_name(), 
+					score:ranking_console.score()
+				}
+
+				ranking.trigger(ranking_console.game_name(), event, args, function(res, opt) {
+					res || game.error(res, opt);
+					!cb || cb(res, opt);
+				});
+			}
+		};
+
+		ranking_console.run();
+	</script>
+</head>
+	<body>
+		<h1>Console</h1>
+		<div>
+			<h2>Games</h2>
+			<p id="games"></p>
+			<p>
+				<input type="text" name="user_name" /> got <input type="text" name="score" />
+				<input type="button" name="game_start" value="start"/>
+				<input type="button" name="game_end" value="end"/>
+				<input type="button" name="random" value="random"/>
+			</p>
+			<p>
+				<div id="channel_msg"></div>
+			</p>
+		</div>
+		<div>
+			<h2>Query</h2>
+			<p>
+				<input type="text" name="offset" value="0"/> ~ <input type="text" name="limit" value="50"/>
+				<input type="radio" name="orderby" value="asc">asc</input>
+				<input type="radio" name="orderby" value="desc" checked>desc</input>
+				<input type="button" name="get" value="get">
+			</p>
+			<p id="rankings">
+			</p>
+		</div>
+	</body>
+</html>

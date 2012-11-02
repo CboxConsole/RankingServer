@@ -1,0 +1,251 @@
+@import url('http://api.mobilis.co.kr/webfonts/css/?fontface=NanumGothic');
+@import url('http://api.mobilis.co.kr/webfonts/css/?fontface=NanumGothicExtraBoldWeb');
+
+/* 
+	MAIN, BODY 
+*/
+body {
+	padding:0;
+	margin:0;
+	font-family: 'NanumGothicExtraBoldWeb';
+	overflow: hidden;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-webkit-backface-visibility: hidden;
+}
+
+
+#app {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height:100%;
+	width:100%;
+	max-width: 100%;
+	max-height: 100%;
+	/*max-width: 768px;
+	max-height: 1024px;*/
+	min-width: 768px;
+	min-height: 1024px;
+	overflow: hidden;
+	background-color: white;
+}
+
+#popup {
+	position: absolute;
+	left: 0px;
+  top: 512px;
+  padding:10px;
+  width:100%;
+  margin-top:-200px;
+  display: block;
+  z-index: 999;
+  font-weight: 1200;
+  opacity: 0;
+  font-size:4.0em;
+  /*optional*/
+  /*background-color: rgba(255,255,2255,1);*/
+  /*border-radius:25px;*/
+  /*border:2px solid black;*/
+}
+
+#popup p {
+	text-align: center;
+	color:rgb(164,202,57);
+	-webkit-text-stroke:3px rgb(0,0,0); 
+}
+
+#popup.pop {
+	-webkit-animation: popup 5s linear 0s 1 alternate;
+}
+
+@-webkit-keyframes popup {
+   0% {opacity: 0;}
+   50% {
+   	opacity: 1;
+   }
+   100% {
+   	opacity: 0.5;
+   	top:402;}
+}
+/* 
+	TOPBAR 
+*/
+#topbar {
+	position: absolute;
+	top:0;
+	left: 0;
+	width: 100%;
+	height:5.5%;
+	background-image: -webkit-linear-gradient(top, #222, #444);
+	background-repeat: repeat-y;
+	border-color: #252525;
+	display:table-cell;
+	vertical-align:middle;
+}
+
+#topbar .banner {
+	background: url(../img/cbox.png) no-repeat left center; 
+	background-size: 100%;
+	/*height:54px;*/
+	height: 100%;
+	width:50px;
+	float: left;
+	margin-right: 10px;
+}
+
+#topbar .title {
+	float: left;
+	height:100%;
+	width:500px;
+	color:white;
+	font-weight: 800;
+	font-size: 2.2em;
+	text-shadow: 0 1px 0 rgba(100,100,100, 0.5);
+	padding: 7px 5px 15px;
+}
+
+/*
+	RANING LIST VIEW
+*/
+.ranking {
+	position: absolute;
+	top:5.5%;
+	height:94.5%;
+	width: 100%;
+	opacity: 1;
+	display: none;
+}
+
+/*
+	RANKING LIST BANNER
+*/
+
+.ranking .banner {
+	display: inline-block;
+	width:100%;
+	height:20%;
+	background-repeat:no-repeat;
+	background-attachment: center;
+	background-position: top; /* cover */
+	background-size: 100% 100%;
+}
+
+@-webkit-keyframes updown {
+   0% {background-position: 0% 0%;}
+   100% {background-position: 0% 100%;}
+}
+
+@-webkit-keyframes stream {
+   0% {background-position: 0% 0%;}
+  25% {background-position: 100% 50%;}
+  50% {
+  	background-position: 0% 90%;
+  	background-size: 150%;
+  }
+  75% {background-position: 100% 50%;}
+  100% {background-position: 0% 0%;}
+}
+ 
+
+.ranking#mong-adventure .banner {
+	background-image: url(../img/game-banner-madv.png);
+}
+
+.ranking#breakout .banner {
+	background-image: url(../img/game-banner-bo.png); 
+}
+
+.ranking#candypang .banner {
+	background-image: url(../img/game-banner-su.png); 
+}
+
+/*
+	RANKING LIST
+*/
+
+.ranking ul {
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+	height:100%;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	list-style: none;
+	-webkit-perspective: 200px;
+	-webkit-backface-visibility: hidden;
+}
+
+.ranking ul li {
+	width: 100%;
+	height:7.4%;
+	position: relative;
+	background: #eee;
+	color: #252525;
+	font-size: 18px;
+	z-index: 2;
+	-webkit-transition: all 600ms ease;
+	-webkit-transform-origin: 50% 50%;
+}
+
+.ranking ul li.reduct {
+	-webkit-transform: scale( 0.01 );
+}
+
+.grow li.remove {
+	-webkit-transform: scale( 0.1 );
+}
+
+ul li:nth-child(odd) {
+	background: #fff;
+}
+
+/*
+	RANK LABEL
+*/
+
+.label {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	table-layout:fixed;
+	display: table;
+	width: 100%;
+	border-bottom: 2px solid #B8C3C9;
+}
+
+.label span {
+	border-spacing: 0;
+	display: table-cell;
+	padding: 0px;
+	margin-right: 0px;
+	text-align: center;
+	font-size: 1.8em;
+	font-weight: 300;
+	padding: 10px 0;
+	width:45%;
+}
+
+.label span:nth-child(1) {
+	width:10%;
+}
+
+/*
+	RANKER LIST ITEM
+*/
+
+.ranker {
+	width: 100%;
+	display: table;
+}
+
+.ranker span {
+	width:45%;
+	height: 100%;
+	display: table-cell;
+	text-align: center;
+	font-size: 1.6em;
+	vertical-align: middle;
+}
+
+.ranker span:nth-child(1) {
+	width:10%;
+}
