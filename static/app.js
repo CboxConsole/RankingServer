@@ -91,6 +91,9 @@ define([
 			else
 				this.collection.fetch();
 		},
+		refresh: function() {
+			this.collection.fetch();
+		},
 		disappear: function(cb) {
 			// remove al list?
 			this.$el.animate({opacity:0}, 1000, function() {
@@ -112,7 +115,7 @@ define([
 			'/': 'render',
 		},
 		_rotator: -1,
-		_rotateInterval: 1000,
+		_rotateInterval: 5000,
 		initialize: function() {
 			_.bindAll(this, 'rotate', 'onmessage', 'onclose');
 			
@@ -179,6 +182,7 @@ define([
 			var msg = ['축하합니다.<br/>', data.user_name, '님<br/>', data.rank, '등입니다'].join('')
 				,	sec = 10;
 			this.pop(msg, sec);
+			data.rank > 10 || this.games[this._rotator].view.refresh();
 			setTimeout(this.rotate, 1000 * sec);
 		},
 		fix: function(game_name) {
@@ -197,7 +201,7 @@ define([
 			};
 
 			(prev) ? prev.view.disappear(rotation) : rotation();
-			(timer) || (this._rotateTimer = setTimeout(this.rotate, this._rotateInterval));
+			(!timer) || (this._rotateTimer = setTimeout(this.rotate, this._rotateInterval));
 		},
 		rotate: function() {
 			var prev = this.games[this._rotator];
