@@ -12,7 +12,7 @@ Google Hackpair에 출품작인 Chrome Games Ranking Server 소스입니다.
 
 ## 라이브러리리 참고하기
 ```
-<script type="text/javascript" src="http://cg-ranking.appspot.com/libs/ranking.js"></script>
+<script type="text/javascript" src="https://raw.github.com/CboxConsole/RankingServer/master/static/libs/ranking.js"></script>
 ```
 
 ## 게임클라이언트에서 사용하기
