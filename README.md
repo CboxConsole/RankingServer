@@ -24,17 +24,17 @@ ranking.trigger함수는 이벤트의 종류와 인자값을 직접 넘겨서 �
 ```
 // 게임 시작시, 점수는 0이며 게이머 이름은 기본으로 사용을 권장합니다.
 ranking.trigger('game_name', 'start', {user_name:'도전자', score:0}, function(res, opt) {
-	!res || throw 'error'
+	if (!res) throw 'error';
 });
 
 // 점수 갱신, 반드시 점수는 올라가야겠죠? 주기는 클라이언트에서 마음대로 하시면 됩니다.
 ranking.trigger('game_name', 'score', {user_name:'도전자', score:100}, function(res, opt) {
-	!res || throw 'error'
+	if (!res) throw 'error';
 });
 
 // 게임 종료, 최종 점수와 실제 기록될 사용자의 이름을 입력 하세요
 ranking.trigger('game_name', 'end', {user_name:'아무개씨', score:1920}, function(res, opt) {
-	!res || throw 'error'
+	if (!res) throw 'error';
 });
 ```
 
@@ -44,17 +44,17 @@ ranking.trigger('game_name', 'end', {user_name:'아무개씨', score:1920}, func
 ```
 // 게임 시작시, 점수는 0이며 게이머 이름은 기본으로 사용을 권장합니다.
 ranking.start('game_name', '도전자', 0, function(res, opt) {
-	!res || throw 'error'
+	if (!res) throw 'error';
 });
 
 // 점수 갱신, 반드시 점수는 올라가야겠죠? 주기는 클라이언트에서 마음대로 하시면 됩니다.
 ranking.score('game_name', '도전자', 0, function(res, opt) {
-	!res || throw 'error'
+	if (!res) throw 'error';
 });
 
 // 게임 종료, 최종 점수와 실제 기록될 사용자의 이름을 입력 하세요
 ranking.end('game_name', '도전자', 0, function(res, opt) {
-	!res || throw 'error'
+	if (!res) throw 'error';
 });
 ```
 
