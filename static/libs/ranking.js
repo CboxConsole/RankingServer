@@ -6,7 +6,7 @@
 	var ranking = {
 		DEBUG: false,
 		baseurl: function() {
-			return ranking.DEBUG ? location.origin : ;
+			return ranking.DEBUG ? location.origin : 'http://cbox-console.appspot.com/';
 		},
 		rankers: function(game_name, offset, limit, orderby, cb) {
 			var query = ['rankers/', game_name, '?offset=', offset, 
