@@ -6,7 +6,7 @@
 	var ranking = {
 		host: undefined,
 		baseurl: function() {
-			return ranking.host ? game.host : 'http://cbox-console.appspot.com/';
+			return ranking.host ? ranking.host : 'http://cbox-console.appspot.com/';
 		},
 		rankers: function(game_name, offset, limit, orderby, cb) {
 			var query = ['rankers/', game_name, '?offset=', offset, 
