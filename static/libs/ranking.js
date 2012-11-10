@@ -4,9 +4,9 @@
 	// @ragingwind
 
 	var ranking = {
-		DEBUG: false,
+		host: undefined,
 		baseurl: function() {
-			return ranking.DEBUG ? 'http://localhost:8082' : 'http://cbox-console.appspot.com/';
+			return ranking.host ? game.host : 'http://cbox-console.appspot.com/';
 		},
 		rankers: function(game_name, offset, limit, orderby, cb) {
 			var query = ['rankers/', game_name, '?offset=', offset, 
