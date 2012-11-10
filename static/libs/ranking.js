@@ -6,7 +6,7 @@
 	var ranking = {
 		DEBUG: false,
 		baseurl: function() {
-			return ranking.DEBUG ? location.origin : 'http://cbox-console.appspot.com/';
+			return ranking.DEBUG ? 'http://localhost:8082' : 'http://cbox-console.appspot.com/';
 		},
 		rankers: function(game_name, offset, limit, orderby, cb) {
 			var query = ['rankers/', game_name, '?offset=', offset, 
@@ -37,6 +37,7 @@
 			});
 		},
 		trigger: function(game_name, action, game_data, cb) {
+			console.log('trigger event', action, 'score', game_data.score);
 			$.ajax({
 				type: 'post',
 			  url: [this.baseurl(), '/game/', game_name, '/', action].join(''),
