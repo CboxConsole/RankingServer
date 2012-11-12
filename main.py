@@ -10,6 +10,7 @@ import webapp2
 import logging
 import datetime
 import random
+import mimetypes
 from django.utils import simplejson as json
 
 from google.appengine.ext import db
@@ -90,7 +91,8 @@ class RankersHandler(webapp2.RequestHandler):
 		self.response.out.write(ret)
 	
 class GameHandler(webapp2.RequestHandler):
-	def post(self, game_name, action):	
+	def post(self, game_name, action):
+		logging.info('got %s', game_name)
 		data = json.loads(self.request.POST['data'])
 
 		res = {
@@ -110,8 +112,26 @@ class GameHandler(webapp2.RequestHandler):
 		logging.info('GAME ON GOING %s, %s, %s, %d, %d', 
 				game_name, action, res['user_name'], res['score'], res['rank'])
 
+		self.response.set_status(200)
+
 		channel.send_message(Afx.channel_key, json.dumps(res));
-		self.response.clear()
+
+class StaticFileHandler(webapp2.RequestHandler):
+	def get(self, path):
+		abs_path = os.path.abspath(os.path.join(self.app.config.get('webapp2_static.static_file_path', 'static'), path))
+		logging.info('GOT REQ file %s, %s', path, abs_path)
+		if os.path.isdir(abs_path) or abs_path.find(os.getcwd()) != 0:
+			self.response.set_status(403)
+			return
+		
+		try:
+			f = open(abs_path, 'r')
+			self.response.headers.add_header('Content-Type', mimetypes.guess_type(abs_path)[0])
+			self.response.headers.add_header('Access-Control-Allow-Origin', '*')
+			self.response.out.write(f.read())
+			f.close()
+		except:
+			self.response.set_status(404)
 
 class MainHandler(webapp2.RequestHandler):
 	def get(self):
@@ -121,6 +141,7 @@ app = webapp2.WSGIApplication([
 	webapp2.Route('/', MainHandler),
 	webapp2.Route('/console', webapp2.RedirectHandler, defaults={'_uri':'/static/console.html'}),
 	webapp2.Route('/ranking', webapp2.RedirectHandler, defaults={'_uri':'/static/ranking.html'}),
+	webapp2.Route(r'/static/(.+)', StaticFileHandler),
 	webapp2.Route('/rankers/<game_name>', RankersHandler),
 	webapp2.Route('/game/<game_name>/<action>', GameHandler),
 	webapp2.Route('/channel/<command>', ChannelHandler),
