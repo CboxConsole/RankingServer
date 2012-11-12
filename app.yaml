@@ -7,9 +7,17 @@ threadsafe: yes
 handlers:
 - url: /static
   static_dir: static
+  http_headers:
+    Access-Control-Allow-Origin: "*"
+    Access-Control-Allow-Methods: "POST, GET, OPTIONS"
+    Access-Control-Allow-Headers: "X-Requested-With"
 
-- url: /libs
+- url: /static/libs
   static_dir: static/libs
+  http_headers:
+    Access-Control-Allow-Origin: "*"
+    Access-Control-Allow-Methods: "POST, GET, OPTIONS"
+    Access-Control-Allow-Headers: "X-Requested-With"
   
 - url: /favicon\.ico
   static_files: favicon.ico
@@ -23,3 +31,6 @@ libraries:
   version: "2.5.1"
 - name: django
   version: "1.2"
+
+inbound_services:
+- channel_presence
