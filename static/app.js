@@ -117,12 +117,14 @@ define([
 		_rotator: -1,
 		_rotateInterval: 5000,
 		initialize: function() {
-			_.bindAll(this, 'rotate', 'onmessage', 'onclose');
+			_.bindAll(this, 'rotate', 'onmessage', 'onclose', 'fix');
 			
 			// bind event with channel events
 			this.on('start', this.gameStarted, this);
 			this.on('score', this.userScored, this);
 			this.on('end', this.gameEnded, this);
+			
+			ranking.host = 'http://192.168.0.5:8080';
 
 			ranking.connect(this);
 			this.render();
@@ -152,7 +154,7 @@ define([
 		},
 		onerror:function() {
 			console.error('channel give error', arguments);
-			ranking.connect(this.delegate);
+			// ranking.connect(this.delegate);
 		},
 		onmessage:function(args) {
 			var data = JSON.parse(args.data);
@@ -179,7 +181,7 @@ define([
 				return;
 			}
 
-			var msg = ['축하합니다.<br/>', data.user_name, '님<br/>', data.rank, '등입니다'].join('')
+			var msg = ['게임끝! 축하합니다.<br/>', data.user_name, '님<br/>', data.rank, '등입니다'].join('')
 				,	sec = 10;
 			this.pop(msg, sec);
 			data.rank > 10 || this.games[this._rotator].view.refresh();
